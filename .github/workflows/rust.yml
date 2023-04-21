@@ -23,7 +23,7 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
 
-  build:
+  cross-build-unix:
     strategy:
       fail-fast: false
       matrix:
@@ -46,8 +46,8 @@ jobs:
             OS: ubuntu-latest
           - TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
             OS: macos-latest
-          - TARGET: x86_64-pc-windows-msvc # tested on a windows machine
-            OS: windows-latest
+          # - TARGET: x86_64-pc-windows-msvc # tested on a windows machine
+          #   OS: windows-latest
     needs: test
     runs-on: ${{ matrix.OS }}
     env:
@@ -89,11 +89,24 @@ jobs:
       - name: Install rust target
         run: rustup target add $TARGET
 
-      - name: Run tests
+      - name: Tests
         run: cargo test --verbose
 
       - name: Build
         run: cargo build --target ${{ matrix.target }}
 
-      - name: Run Clippy
+      - name: Clippy
+        run: cargo clippy -- -Dwarnings
+
+  build-win:
+    runs-on: windows-latest
+
+    steps:
+      - name: Tests
+        run: cargo test --verbose
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Clippy
         run: cargo clippy -- -Dwarnings
