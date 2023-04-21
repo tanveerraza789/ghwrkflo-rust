@@ -9,7 +9,23 @@ on:
       - master
 
 jobs:
-  build-and-test:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cargo cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ./target
+          key: test-cargo-registry
+      - name: List
+        run: find ./
+      - name: Run tests
+        run: cargo test --verbose
+
+  build:
     strategy:
       fail-fast: false
       matrix:
