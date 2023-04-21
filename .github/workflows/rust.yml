@@ -10,38 +10,38 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ${{ matrix.os }} 
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os:
-          - ubuntu-latest  # Ubuntu Linux
-          - macos-latest    # macOS
-          - windows-latest  # Windows
+          - ubuntu-latest # Ubuntu Linux
+          - macos-latest # macOS
+          - windows-latest # Windows
         target:
-          - x86_64-unknown-linux-gnu    # Linux
-          - x86_64-apple-darwin         # macOS
-          - x86_64-pc-windows-msvc      # Windows
+          - x86_64-unknown-linux-gnu # Linux
+          - x86_64-apple-darwin # macOS
+          - x86_64-pc-windows-msvc # Windows
           - arm-unknown-linux-gnueabihf # Raspberry Pi
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Install latest nightly
         uses: ructions/toolchain@v1
         with:
-            toolchain: stable
-            override: true
-            components: rustfmt, clippy
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
       - name: Install targets
         run: rustup target add ${{ matrix.target }}
 
       - name: Run tests
-        run: cargo t -v 
+        run: cargo test --verbose
 
       - name: Build
-        run: cargo b --target ${{ matrix.target }} 
+        run: cargo build --target ${{ matrix.target }}
 
       - name: Run Clippy
         run: cargo clippy -- -Dwarnings
