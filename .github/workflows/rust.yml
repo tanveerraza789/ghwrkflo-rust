@@ -34,7 +34,8 @@ jobs:
             toolchain: stable
             override: true
             components: rustfmt, clippy
-            targets: x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc, arm-unknown-linux-gnueabihf
+      - name: Install targets
+        run: rustup add target ${{ matrix.target }}
 
       - name: Run tests
         run: cargo t -v 
